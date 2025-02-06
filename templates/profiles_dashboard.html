@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIH Profiles</title>
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: system-ui;
+            margin: 0;
+            padding: 0;
+            background-color: #1f2128;
+            color: #f8f8f8;
+        }
+
+        .container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-bar-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            padding: 12px;
+            border: 2px solid #666;
+            border-radius: 24px;
+            font-size: 16px;
+            width: 20em;
+            background-color: #25292e;
+            color: #ccc;
+        }
+
+        .total-docs {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            right: 0;
+        }
+
+        /* Masonry grid style */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-gap: 20px;
+            width: 111em;
+            margin-top: 20px;
+        }
+
+        /* Styling each profile card */
+        .card {
+            background-color: #2d353e;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            color: #d4d4d4;            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #bbb;
+            margin: 3px 0;
+        }
+
+        .card .key-value {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .key-value strong {
+            color: #f5c518;
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3em;
+        }
+
+        .pagination button {
+            padding: 5px 17px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .pagination button.disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+        
+    </style>
+</head>
+<body>
+
+<!-- Search and Profile Container -->
+<div class="container">
+    <!-- Search bar -->
+    <div class="search-bar-container">
+        <form action="/profiles" method="get">
+            <input class="search-bar" type="text" name="query" placeholder="Search Profiles" value="{{ search_query }}">
+        </form>
+        <div class="total-docs">
+            Total Profiles: {{ total_profiles }}
+        </div>
+    </div>
+
+    <!-- Profiles Grid (Masonry Layout) -->
+    <div class="grid">
+        {% for profile in profiles %}
+        <div class="card">
+            <div class="key-value">
+            <h3>{{ profile.name }}</h3>
+            <p><strong>Position:</strong> {{ profile.position }}</p>
+            <p><strong>About:</strong> {{ profile.about }}</p>
+            <p><strong>Source:</strong> {{ profile.source }}</p>
+            <p><strong>Part:</strong> {{ profile.part }}</p>
+            <p><strong>Description:</strong> {{ profile.description }}</p>
+            
+            <!-- Display profile image if available -->
+            {% if profile.picture %}
+            <img src="{{ profile.picture[0] }}" alt="{{ profile.name }} image">
+            {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="/profiles?page=1&query={{ search_query }}"><button>First</button></a>
+            <a href="/profiles?page={{ page - 1 }}&query={{ search_query }}"><button>Previous</button></a>
+        {% else %}
+            <button class="disabled">First</button>
+            <button class="disabled">Previous</button>
+        {% endif %}
+
+        <span>Page {{ page }} of {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+            <a href="/profiles?page={{ page + 1 }}&query={{ search_query }}"><button>Next</button></a>
+            <a href="/profiles?page={{ total_pages }}&query={{ search_query }}"><button>Last</button></a>
+        {% else %}
+            <button class="disabled">Next</button>
+            <button class="disabled">Last</button>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

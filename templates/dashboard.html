@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIH Analysis</title>
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: system-ui;
+            margin: 0;
+            padding: 0;
+            background-color: #1f2128;
+            color: #f8f8f8;
+        }
+
+        .container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-bar-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            padding: 12px;
+            border: 2px solid #666;
+            border-radius: 24px;
+            font-size: 16px;
+            width: 20em;
+            background-color: #25292e;
+            color: #ccc;
+        }
+        .total-docs {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            right: 0; /* Align Total Documents to the right */
+        }
+
+        .grid {
+            width: 111em;
+            column-count: 4;
+            column-gap: -1px;
+            margin-top: 2em;
+        }
+
+        .card {
+            background-color: #2d353e;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            color: #d4d4d4;
+            transition: all 0.3s ease;
+            width: 24em;
+            margin: auto;
+            break-inside: avoid; 
+            margin-bottom: 1em;
+        }
+
+        .card h3 {
+            font-size: 22px;
+            color: #e8e8e8;
+            margin-bottom: 15px;
+            margin-top: 0em;
+        }
+
+        .key-value div {
+            font-size: 14px;
+            margin: 5px 0;
+            padding: 6px;
+        }
+
+        .key-value strong {
+            color: #f5c518;
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .video-container {
+            margin-top: 10px;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 200px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 5px 17px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .pagination button.disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+        .video-container iframe {
+            width: 100%;
+            height: 320px;
+        }
+ 
+        .Profiles{
+            padding: 6px 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            border-radius: 6px;
+            border: none;
+            background: #6E6D70;
+            box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.5), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+            color: #DFDEDF;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            position: absolute;
+            right: 23em;
+            top: 0.5em;
+        }
+        .Profiles:hover {
+            background-color: white;
+            color: black;
+        }
+        .Cases{
+            padding: 6px 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            border-radius: 6px;
+            border: none;
+            background: #6E6D70;
+            box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.5), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+            color: #DFDEDF;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            position: absolute;
+            right: 15em;
+            top: 0.5em;
+        }
+        .Cases:hover {
+            background-color: white;
+            color: black;
+        }
+        .network{
+            padding: 6px 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            border-radius: 6px;
+            border: none;
+            background: #6E6D70;
+            box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.5), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+            color: #DFDEDF;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            position: absolute;
+            right: 32em;
+            top: 0.5em;
+        }
+        .network:hover{
+            background-color: white;
+            color: black;
+        }
+
+    </style>
+    
+</head>
+<body>
+<div class="container">
+    <!-- Search bar and Total Documents -->
+    <div class="search-bar-container">
+        <form action="/" method="get">
+            <input class="search-bar" type="text" name="query" placeholder="Search..." value="{{ search_query }}">
+        </form>
+        <div class="total-docs">
+            Total Documents: {{ total_documents }}
+        </div>
+            <!-- Button to go to Profiles Page -->
+        <a href="/profiles">
+            <button class="Profiles">View Profiles</button>
+        </a>
+        <a href="/cases">
+            <button class="Cases">View Cases</button>
+        </a>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="grid">
+        {% for card in cards %}
+        <div class="card">
+            <h3>{{ card.heading }}</h3>
+            <div class="key-value">
+                <div><strong>Date:</strong> {{ card.date }}</div>
+                <div><strong>Content:</strong> {{ card.content }}</div>
+            </div>
+
+            <!-- Display images if available -->
+            {% if card.picture %}
+            <div class="image-container">
+                {% for img_url in card.picture %}
+                    <img src="{{ img_url }}" alt="Image">
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Display video if available -->
+            {% if card.video_source %}
+            <div class="video-container">
+                <iframe src="{{ card.video_source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="?query={{ search_query }}&page=1"><button>First</button></a>
+            <a href="?query={{ search_query }}&page={{ page - 1 }}"><button>Previous</button></a>
+        {% else %}
+            <button class="disabled">First</button>
+            <button class="disabled">Previous</button>
+        {% endif %}
+
+        <span>Page {{ page }} of {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+            <a href="?query={{ search_query }}&page={{ page + 1 }}"><button>Next</button></a>
+            <a href="?query={{ search_query }}&page={{ total_pages }}"><button>Last</button></a>
+        {% else %}
+            <button class="disabled">Next</button>
+            <button class="disabled">Last</button>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
