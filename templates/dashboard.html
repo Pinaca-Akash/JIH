@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JIH Analysis</title>
+    <title>JIH Activity</title>
     <style>
         /* Your existing CSS styles */
         body {
@@ -125,7 +125,7 @@
             width: 100%;
             height: 320px;
         }
- 
+
         .Profiles{
             padding: 6px 14px;
             font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
@@ -183,11 +183,92 @@
             background-color: white;
             color: black;
         }
+        /* Popup Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2d353e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            width: 50%;
+            z-index: 1000;
+            max-height: 80vh;  /* Limit the max height */
+            overflow: hidden;  /* Hide overflow outside the popup */
+        }
+
+        /* Add a scrollable content area */
+        .popup-content {
+            max-height: 60vh;  /* Set max height for content area */
+            overflow-y: auto;  /* Allow vertical scrolling */
+            margin-bottom: 20px;
+        }
+
+        .popup h3 {
+            margin-top: 0;
+        }
+
+        .popup .close-btn {
+            background-color: #f44336;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        /* Spinner Styles */
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 8px solid #ddd;
+            border-top: 8px solid #007bff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
     </style>
-    
 </head>
 <body>
+<div class="spinner-overlay" id="spinner-overlay">
+    <div class="spinner"></div>
+</div>
 <div class="container">
     <!-- Search bar and Total Documents -->
     <div class="search-bar-container">
@@ -208,31 +289,33 @@
 
     <!-- Cards grid -->
     <div class="grid">
-        {% for card in cards %}
+        {% for card in cards|sort(attribute='date', reverse=True) %}
         <div class="card">
             <h3>{{ card.heading }}</h3>
             <div class="key-value">
                 <div><strong>Date:</strong> {{ card.date }}</div>
-                <div><strong>Content:</strong> {{ card.content }}</div>
+                <div class="content">
+                    {% if card.content|length > 200 %}
+                        {{ card.content[:200] }}... <button class="read-more-btn" data-content="{{ card.content }}" data-date="{{ card.date }}" data-pictures="{{ card.picture|join(',') }}" data-video="{{ card.video_source }}">Read More</button>
+                    {% else %}
+                        {{ card.content }}
+                    {% endif %}
+                </div>
             </div>
 
-            <!-- Display images if available -->
-            {% if card.picture %}
+            <!-- Display one image if available, otherwise display one video -->
+            {% if card.picture and card.picture|length > 0 %}
             <div class="image-container">
-                {% for img_url in card.picture %}
-                    <img src="{{ img_url }}" alt="Image">
-                {% endfor %}
+                <img src="{{ card.picture[0] }}" alt="Image">
             </div>
-            {% endif %}
-
-            <!-- Display video if available -->
-            {% if card.video_source %}
+            {% elif card.video_source %}
             <div class="video-container">
                 <iframe src="{{ card.video_source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
             {% endif %}
         </div>
         {% endfor %}
+
     </div>
 
     <!-- Pagination controls -->
@@ -257,5 +340,94 @@
     </div>
 </div>
 
+<!-- Popup and overlay -->
+<div class="popup-overlay"></div>
+<div class="popup" id="popup">
+    <h3 id="popup-heading"></h3>
+    <p><strong>Date:</strong> <span id="popup-date"></span></p>
+    <div class="popup-content">
+        <p id="popup-content"></p>
+        <div id="popup-images"></div>
+        <div id="popup-video" class="video-container"></div>
+    </div>
+    <button class="close-btn">Close</button>
+</div>
+
+<script>
+    // JavaScript for Read More popup
+    const popup = document.getElementById('popup');
+    const popupOverlay = document.querySelector('.popup-overlay');
+    const popupContent = document.getElementById('popup-content');
+    const popupHeading = document.getElementById('popup-heading');
+    const popupDate = document.getElementById('popup-date');
+    const popupImages = document.getElementById('popup-images');
+    const popupVideo = document.getElementById('popup-video');
+    const closeBtn = document.querySelector('.close-btn');
+
+    document.querySelectorAll('.read-more-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.getAttribute('data-content');
+            const heading = button.closest('.card').querySelector('h3').innerText;
+            const date = button.getAttribute('data-date');
+            const pictures = button.getAttribute('data-pictures').split(',');
+            const video = button.getAttribute('data-video');
+
+            popupHeading.innerText = heading;
+            popupContent.innerText = content;
+            popupDate.innerText = date;
+
+            // Add images to the popup
+            popupImages.innerHTML = '';
+            if (pictures.length && pictures[0]) {
+                pictures.forEach(picture => {
+                    const img = document.createElement('img');
+                    img.src = picture;
+                    img.alt = 'Image';
+                    img.style.width = '100%';
+                    img.style.marginTop = '10px';
+                    popupImages.appendChild(img);
+                });
+            }
+
+            // Add video to the popup
+            popupVideo.innerHTML = '';
+            if (video) {
+                const iframe = document.createElement('iframe');
+                iframe.src = video;
+                iframe.frameBorder = '0';
+                iframe.allow = 'autoplay; encrypted-media';
+                iframe.allowFullscreen = true;
+                popupVideo.appendChild(iframe);
+            }
+
+            popup.style.display = 'block';
+            popupOverlay.style.display = 'block';
+        });
+    });
+
+    closeBtn.addEventListener('click', () => {
+        popup.style.display = 'none';
+        popupOverlay.style.display = 'none';
+    });
+
+    popupOverlay.addEventListener('click', () => {
+        popup.style.display = 'none';
+        popupOverlay.style.display = 'none';
+    });
+</script>
+<script>
+    const spinnerOverlay = document.getElementById('spinner-overlay');
+
+    function showSpinner() {
+        spinnerOverlay.style.display = 'flex';
+    }
+
+    function hideSpinner() {
+        spinnerOverlay.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', showSpinner); 
+    window.addEventListener('load', hideSpinner); 
+</script>
 </body>
 </html>

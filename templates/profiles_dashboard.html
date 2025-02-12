@@ -136,22 +136,21 @@
     <div class="grid">
         {% for profile in profiles %}
         <div class="card">
-            <div class="key-value">
-            <h3>{{ profile.name }}</h3>
-            <p><strong>Position:</strong> {{ profile.position }}</p>
-            <p><strong>About:</strong> {{ profile.about }}</p>
-            <p><strong>Source:</strong> {{ profile.source }}</p>
-            <p><strong>Part:</strong> {{ profile.part }}</p>
-            <p><strong>Description:</strong> {{ profile.description }}</p>
-            
-            <!-- Display profile image if available -->
-            {% if profile.picture %}
-            <img src="{{ profile.picture[0] }}" alt="{{ profile.name }} image">
-            {% endif %}
+            <div class="key-value"> 
+                <h3>{{ profile.name }}</h3>
+                <p><strong>Position:</strong> {{ profile.position }}</p>
+                <p><strong>About:</strong> {{ profile.about }}</p>
+                <p><strong>Source:</strong> {{ profile.source }}</p>
+                <p><strong>Part:</strong> {{ profile.part }}</p>
+                <p><strong>Description:</strong> {{ profile.description }}</p>
+                 <!-- Display profile image first if available -->
+                {% if profile.picture %}
+                <img src="{{ profile.picture[0] }}" alt="{{ profile.name }} image">
+                {% endif %}
             </div>
         </div>
         {% endfor %}
-    </div>
+    </div>    
 
     <!-- Pagination -->
     <div class="pagination">

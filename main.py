@@ -102,6 +102,9 @@ class CaseCard(BaseModel):
     Facebook: Optional[str]
     Instagram:Optional[str]
     Twitter:Optional[str]
+    Father:str
+    Mother:str
+
 
 
 async def get_data_from_mongo():
@@ -157,7 +160,9 @@ async def get_cases_from_mongo():
             picture=document.get("Picture", ""),
             Facebook=document.get("Facebook ", "NAN"),
             Instagram=document.get("Instagram", "NAN"),
-            Twitter=document.get("Twitter", "NAN")
+            Twitter=document.get("Twitter", "NAN"),
+            Father=document.get("Father's name","NAN"),
+            Mother=document.get("Mother's name","NAN")
         )
 
         cases.append(case)
@@ -189,7 +194,7 @@ async def read_dashboard(request: Request, query: str = '', page: int = 1):
 
     total_documents = len(data)
 
-    items_per_page = 10
+    items_per_page = 8
     total_pages = math.ceil(total_documents / items_per_page)
 
     page = max(1, min(page, total_pages))
@@ -308,14 +313,19 @@ async def get_network_graph_data(query: str):
                 "borderWidth": 3,
             })
 
+
+            not_allowed_keys = [
+                "Picture", "Instagram", "Facebook ", "Alias", "Gender", 
+                "Date of Birth", "Age", "Nationality", "Contact Number", 
+                "Marital Status", "Email ID", "CDR", "IPDR", "Case Files",
+                "Name", "Mother's name", "Father's name", "Twitter"
+            ]
+
             for key, value in doc.items():
-                if key == "Name":
+                if key in not_allowed_keys: 
                     continue
 
-                if value in [np.nan, None]:
-                    continue 
-
-                if isinstance(value, str) and value.strip() and key != "Picture" and key != "Instagram" and key!= "Facebook " and key!= "Alias" and key!="Gender" and key!="Date of Birth" and key!="Age" and key!="Nationality" and key!="Contact Number" and key!="Marital Status" and key!="Email ID":
+                if isinstance(value, str) and value.strip():  
                     node_label = f"{key}: {value}"
                     node_id = f"{key}_{value[:10]}"
                     
@@ -331,9 +341,9 @@ async def get_network_graph_data(query: str):
                     
                     edges.append({"from": name, "to": node_id})
 
-                elif isinstance(value, list):
+                elif isinstance(value, list): 
                     for idx, item in enumerate(value):
-                        if item.strip() and key != "Picture":
+                        if isinstance(item, str) and item.strip():  
                             node_id = f"{key}_{idx}"
                             nodes.append({
                                 "id": node_id,
@@ -346,44 +356,11 @@ async def get_network_graph_data(query: str):
                             })
                             edges.append({"from": name, "to": node_id})
 
+
+
             facebook_url = doc.get("Facebook ", "https://default-facebook-url.com")
             instagram_url = doc.get("Instagram", "https://default-instagram-url.com")
             Twitter_url = doc.get("Twitter", "https://default-twitter-url.com")
-            
-            nodes.append({
-                "id": "Facebook",
-                "label": "Facebook", 
-                "shape": "box",
-                "size": 40,
-                "font": {"size": 12, "color": "#FFFFFF"},
-                "color": "#4CAF50",
-                "borderWidth": 3,
-                "url": facebook_url  
-            })
-            nodes.append({
-                "id": "Instagram",
-                "label": "Instagram",  
-                "shape": "box",
-                "size": 40,
-                "font": {"size": 12, "color": "#FFFFFF"},
-                "color": "#4CAF50",
-                "borderWidth": 3,
-                "url": instagram_url  
-            })
-            nodes.append({
-                "id": "Twitter",
-                "label": "Twitter",  
-                "shape": "box",
-                "size": 40,
-                "font": {"size": 12, "color": "#FFFFFF"},
-                "color": "#4CAF50",
-                "borderWidth": 3,
-                "url": Twitter_url  
-            })
-
-            edges.append({"from": name, "to": "Facebook"})
-            edges.append({"from": name, "to": "Instagram"})
-            edges.append({"from": name, "to": "Twitter"})
 
             graph_data = {
                 "nodes": nodes,
@@ -394,7 +371,8 @@ async def get_network_graph_data(query: str):
                 "graph_data_json": json.dumps(graph_data, default=objectid_converter),
                 "name": name,
                 "facebook_url": facebook_url,
-                "instagram_url": instagram_url
+                "instagram_url": instagram_url,
+                "Twitter_url":Twitter_url
             })
 
     return graph_data_list

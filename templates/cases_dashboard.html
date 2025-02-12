@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JIH Cases and Network Graph</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>JIH Cases</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
@@ -92,7 +91,7 @@
 
         .card img {
             width: 100%;
-            height: auto;
+            height: 10em;
             border-radius: 8px;
             margin-top: 15px;
         }
@@ -163,13 +162,14 @@
             color: #bbb;
             width: 24.5em;
             margin-left: 2em;
+            height: fit-content;
         }
 
         .social-media .btn__container {
             display: flex;
             flex-direction: column;  
             align-items: start;
-            gap: 10px;
+            gap: 17px;
         }
 
         .btn {
@@ -322,24 +322,24 @@
         }
 
         .graph-container {
-            height: 45.5em;
+            height: 47.1em;
             border-radius: 12px;
             box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.2);
-            margin-top: -34em;
+            margin-top: -35em;
             margin-left: -27em;
             width: 142%;
+            background: #2c343d;
         }
 
         /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
-            margin-top: 2em;
+            margin-top: 45px;
         }
 
-        .pagination button,
-        .pagination a button {
-            padding: 10px 20px;
+        .pagination button {
+            padding: 5px 17px;
             margin: 0 5px;
             font-size: 16px;
             cursor: pointer;
@@ -349,8 +349,7 @@
             border-radius: 4px;
         }
 
-        .pagination button.disabled,
-        .pagination a button.disabled {
+        .pagination button.disabled {
             background-color: #ddd;
             cursor: not-allowed;
         }
@@ -382,6 +381,8 @@
                 <div><strong>Contact Number: </strong>{{ case.ContactNumber }}</div>
                 <div><strong>Email ID: </strong>{{ case.EmailId }}</div>
                 <div><strong>Marital Status: </strong>{{ case.Marital_Status }}</div>
+                <div><strong>Father: </strong>{{ case.Father }}</div>
+                <div><strong>Mother: </strong>{{ case.Mother }}</div>
             </div>
 
             {% if case.picture %}
@@ -448,29 +449,33 @@
         <!-- Graph Section -->
         {% for graph in network_graph_data %}
             {% if graph.name == case.name %}
-                <div class="graph-container">
-                    <div id="graph-{{ loop.index }}" style="height: 100%; width: 100%;"></div>
-                    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.0.0/dist/vis-network.min.js"></script>
-                    <script>
-                        var graphData = {{ graph.graph_data_json | safe }};
-                        var container = document.getElementById('graph-{{ loop.index }}');
-                        var options = {
-                            nodes: {
-                                shape: 'box',
-                                font: {
-                                    size: 14,
-                                    color: '#FFFFFF'
-                                },
-                                borderWidth: 3
+            <div class="graph-container">
+                <div id="graph-{{ loop.index }}" style="height: 100%; width: 100%;"></div>
+                <script src="https://cdn.jsdelivr.net/npm/vis-network@9.0.0/dist/vis-network.min.js"></script>
+                <script>
+                    var graphData = {{ graph.graph_data_json | safe }};
+                    var container = document.getElementById('graph-{{ loop.index }}');
+                    var options = {
+                        nodes: {
+                            shape: 'circle',
+                            font: {
+                                size: 50, 
+                                background: '#101218', 
                             },
-                            edges: {
-                                width: 0,
-                                color: '#d5dbdb'
-                            }
-                        };
-                        var network = new vis.Network(container, graphData, options);
-                    </script>
-                </div>
+                            borderWidth: 0, 
+                            heightConstraint: 50,
+                            widthConstraint: 150, 
+                        },
+                        edges: {
+                            length: 250    
+                        },
+
+
+                    };
+                    var network = new vis.Network(container, graphData, options);
+                </script>
+            </div>
+            
             {% endif %}
         {% endfor %}
         {% endfor %}
