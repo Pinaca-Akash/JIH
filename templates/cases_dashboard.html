@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* Base Styles */
+      /* Base Styles */
         body {
             font-family: system-ui, sans-serif;
             margin: 0;
@@ -49,6 +49,7 @@
             position: absolute;
             right: 0;
             color: #fff;
+            margin-right: 5em;
         }
 
         /* Profile and Media Section */
@@ -58,6 +59,7 @@
             gap: 20px;
             width: 100%;
             margin-top: 2em;
+            margin-left: 2em;
         }
 
         .card {
@@ -67,9 +69,8 @@
             box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
             color: #d4d4d4;
             transition: all 0.3s ease;
-            width: 24em;
             margin-left: 2em;
-            
+            max-width: 28em;
         }
 
         .card h3 {
@@ -96,17 +97,17 @@
             margin-top: 15px;
         }
 
-                /* Download Buttons */
+        /* Download Buttons */
         .download-btn-container {
             display: flex;
             flex-direction: row;
             gap: 3em;
             justify-content: flex-start;
             height: 2.5em;
-            margin-left: -27em;
+            margin-left: 0;
         }
 
-        .download-btn{
+        .download-btn {
             background-color: #46515e;
             color: white;
             padding: 10px 20px;
@@ -115,11 +116,12 @@
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            width: 17em;
             text-align: center;
             justify-content: center;
+            width: 15em;
         }
-        .download-btn-drop{
+
+        .download-btn-drop {
             color: white;
             padding: 10px 20px;
             border-radius: 6px;
@@ -132,15 +134,16 @@
             width: 15em;
             justify-content: center;
             background-color: #46515e;
-            
         }
 
-        .download-btn:hover{
+        .download-btn:hover {
             background-color: #55606b;
         }
-        .download-btn-drop:hover{
+
+        .download-btn-drop:hover {
             background-color: #ccc;
         }
+
         .file-dropdown {
             padding: 8px;
             background-color: #46515e;
@@ -148,10 +151,9 @@
             border: 1px solid #666;
             border-radius: 6px;
             margin-right: 10px;
-            width: 18.5em;
             text-align: center;
             font-size: 16px;
-
+            width: 16em;
         }
 
         .social-media {
@@ -160,9 +162,9 @@
             padding: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
             color: #bbb;
-            width: 24.5em;
             margin-left: 2em;
             height: fit-content;
+            width: 22em;
         }
 
         .social-media .btn__container {
@@ -326,9 +328,9 @@
             border-radius: 12px;
             box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.2);
             margin-top: -35em;
-            margin-left: -27em;
-            width: 142%;
             background: #2c343d;
+            width: 100%;
+            margin-left: 0;
         }
 
         /* Pagination */
@@ -353,6 +355,111 @@
             background-color: #ddd;
             cursor: not-allowed;
         }
+
+        @media (min-width: 1601px) and (max-width: 1920px) {
+            .total-docs {
+                margin-right: 7em;
+            }
+            .card {
+                max-width: 25em;
+                margin-left: 5em;
+            }
+            .Main {
+                margin-left: 0em;
+            }
+            .social-media {
+                width: 25.4em;
+                margin-left: 5em;
+            }
+            .download-btn-container {
+                margin-left: -24em;
+            }
+            .graph-container {
+                width: 131%;
+                margin-left: -24em;
+            }
+        }
+
+
+        /* Media Query for 1600px screens and smaller */
+        @media (max-width: 1600px) {
+            .graph-container {
+                margin-left: -15em;
+                width: 130%;
+            }
+            .Main {
+                margin-left: -2em;
+            }
+            .download-btn {
+                width: 11em;
+            }
+            .download-btn-container {
+                margin-left: -15em;
+            }
+            .file-dropdown {
+                width: 14.5em;
+            }
+            .social-media{
+                width: 24.6em;
+            }
+            .card{
+                max-width: 24em;
+            }
+        }
+
+        /* Media Query for 1536px screens and smaller */
+        @media (max-width: 1536px) {
+            .card {
+                max-width: 21em;
+            }
+            .social-media {
+                width: 21.7em;
+            }
+        }
+
+        /* Media Query for 1440px screens and smaller */
+        @media (min-width: 1367px) and (max-width: 1440px) {
+            .card {
+                max-width: 20em;
+                margin-left: 5em;
+            }
+            .graph-container {
+                margin-left: -15em;
+                width: 127%;
+            }
+            .download-btn-drop {
+                width: 9.3em;
+            }
+            .download-btn-container {
+                gap: 1em;
+            }
+            .social-media{
+                width: 20.7em;
+                margin-left: 5em;
+            }
+        }     
+        
+        @media (max-width: 1366px) {
+
+            .total-docs{
+                margin-right: 0.8em;
+            }
+            .download-btn-container{
+                margin-left: -15.2em;
+                gap: 1em;
+            }
+            .download-btn{
+                width: 11em;
+            }
+            .download-btn-drop{
+                width: 11em;
+            }
+            .graph-container{
+                margin-left: -15em;
+                width: 137%;
+            }
+        }
+
     </style>
 </head>
 <body>

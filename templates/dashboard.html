@@ -48,10 +48,11 @@
         }
 
         .grid {
-            width: 111em;
             column-count: 4;
             column-gap: -1px;
             margin-top: 2em;
+            width: 100%; /* Default full width for grid */
+            max-width: 92em;
         }
 
         .card {
@@ -61,10 +62,11 @@
             box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
             color: #d4d4d4;
             transition: all 0.3s ease;
-            width: 24em;
             margin: auto;
             break-inside: avoid; 
             margin-bottom: 1em;
+            width: 100%; 
+            max-width: 20em; 
         }
 
         .card h3 {
@@ -262,6 +264,96 @@
                 transform: rotate(360deg);
             }
         }
+        
+
+        /* Screen-specific adjustments */
+        @media (max-width: 1920px) {
+            .Cases {
+                right: 18em;
+            }
+            .Profiles {
+                right: 27em;
+            }
+            .total-docs {
+                right: 4em;
+            }
+            .card{
+                max-width: 24.5em;
+            }
+            .grid{
+                max-width: 112em;
+            }
+        }
+
+        @media (max-width: 1600px) {
+            .card {
+                width: 19.7em;
+            }
+            .grid {
+                width: 92em;
+            }
+            .total-docs {
+                right: 3em;
+            }
+        }
+
+        @media (max-width: 1536px) {
+            .card {
+                width: 19em;
+            }
+            .grid {
+                width: 91em;
+            }
+            .total-docs {
+                right: 2em;
+            }
+        }
+
+        @media (max-width: 1440px) {
+            .card {
+                width: 18em;
+            }
+            .grid {
+                width: 86em;
+            }
+            .Cases {
+                right: 17em;
+            }
+            .Profiles {
+                right: 25em;
+            }
+        }
+
+        @media (max-width: 1366px) {
+            .card {
+                width: 17em;
+            }
+            .grid {
+                width: 83em;
+            }
+            .Cases {
+                right: 16em;
+            }
+            .Profiles {
+                right: 24em;
+            }
+            .total-docs {
+                right: 1em;
+            }
+        }
+
+        @media (max-width: 1280px) {
+            .card {
+                width: 15.5em;
+            }
+            .grid {
+                width: 75em;
+            }
+            .total-docs {
+                right: 2em;
+            }
+        }
+
 
     </style>
 </head>
@@ -296,27 +388,32 @@
                 <div><strong>Date:</strong> {{ card.date }}</div>
                 <div class="content">
                     {% if card.content|length > 200 %}
-                        {{ card.content[:200] }}... <button class="read-more-btn" data-content="{{ card.content }}" data-date="{{ card.date }}" data-pictures="{{ card.picture|join(',') }}" data-video="{{ card.video_source }}">Read More</button>
+                        {{ card.content[:200] }}... 
+                        <button class="read-more-btn" 
+                            data-content="{{ card.content }}" 
+                            data-date="{{ card.date }}" 
+                            data-pictures="{{ card.picture|join(',') }}" 
+                            data-video="{{ card.video_source }}">
+                            Read More
+                        </button>
                     {% else %}
                         {{ card.content }}
                     {% endif %}
                 </div>
             </div>
-
-            <!-- Display one image if available, otherwise display one video -->
-            {% if card.picture and card.picture|length > 0 %}
-            <div class="image-container">
-                <img src="{{ card.picture[0] }}" alt="Image">
-            </div>
-            {% elif card.video_source %}
-            <div class="video-container">
-                <iframe src="{{ card.video_source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
-            {% endif %}
+             <!-- Display one image if available, otherwise display one video -->
+             {% if card.picture and card.picture|length > 0 %}
+             <div class="image-container">
+                 <img src="{{ card.picture[0] }}" alt="Image">
+             </div>
+             {% elif card.video_source %}
+             <div class="video-container">
+                 <iframe src="{{ card.video_source }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+             </div>
+             {% endif %}
         </div>
         {% endfor %}
-
-    </div>
+        </div>
 
     <!-- Pagination controls -->
     <div class="pagination">

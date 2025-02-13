@@ -45,7 +45,7 @@
             font-weight: bold;
             color: white;
             position: absolute;
-            right: 0;
+            right: 5em;
         }
 
         /* Masonry grid style */
@@ -53,8 +53,9 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             grid-gap: 20px;
-            width: 111em;
             margin-top: 20px;
+            width: 100%; /* Default full width for grid */
+            max-width: 120em;
         }
 
         /* Styling each profile card */
@@ -63,9 +64,11 @@
             border-radius: 8px;
             padding: 15px;
             box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-            color: #d4d4d4;            display: flex;
+            color: #d4d4d4;            
+            display: flex;
             flex-direction: column;
             align-items: stretch;
+            max-width: 20em; 
             
         }
 
@@ -115,6 +118,51 @@
             background-color: #ddd;
             cursor: not-allowed;
         }
+
+
+        @media (max-width: 1920px) {
+            .card {
+                max-width: 19em;
+            }
+            .total-docs {
+                right: 4em;
+            }
+            .grid {
+                max-width: 110em;
+            }
+        }
+
+        @media (max-width: 1600px) {
+            .card {
+                max-width: 17em;
+            }
+            .total-docs {
+                right: 3em;
+            }
+        }
+
+        @media (max-width: 1536px) {
+            .card {
+                max-width: 16em;
+            }
+        }
+
+        @media (max-width: 1440px) {
+            .card {
+                max-width: 19em;
+            }
+        }
+
+        @media (max-width: 1366px) {
+            .card {
+                max-width: 18em;
+            }
+            .total-docs {
+                right: 2em;
+            }
+        }
+
+        
         
     </style>
 </head>

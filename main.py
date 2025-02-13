@@ -107,6 +107,8 @@ class CaseCard(BaseModel):
 
 
 
+from datetime import datetime
+
 async def get_data_from_mongo():
     data = []
     for collection_name, collection in collections.items():
@@ -129,16 +131,25 @@ async def get_data_from_mongo():
             elif not isinstance(content, str):
                 content = str(content)  
 
+            raw_date = document.get("Date", "NAN")
+            try:
+                parsed_date = datetime.strptime(raw_date, "%Y-%m-%d")  
+            except ValueError:
+                parsed_date = datetime.min  
+
             card = Card(
-                date = document["Date"] if "Date" in document else "NAN",
-                heading=document["Heading"],
+                date=raw_date,
+                heading=document.get("Heading", "NAN"),
                 content=content,  
                 picture=picture,  
                 video_source=video_source  
             )
-            data.append(card)
+            data.append({"card": card, "date": parsed_date})
     
-    return data
+    data = sorted(data, key=lambda x: x["date"], reverse=True)
+
+    return [item["card"] for item in data]
+
   
 async def get_cases_from_mongo():
     cases = []
